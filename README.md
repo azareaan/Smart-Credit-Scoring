@@ -37,13 +37,16 @@ pip install -e .
 
 ## Run
 ```bash
-python scripts/run_pipeline.py --data /path/to/application_train.csv --output outputs --percentile 95
+python scripts/run_pipeline.py --output outputs --percentile 95
 ```
 
 Or after editable install:
 ```bash
-credit-anomaly-pipeline --data /path/to/application_train.csv --output outputs --percentile 95
+credit-anomaly-pipeline --output outputs --percentile 95
 ```
+
+
+By default, the CLI reads the dataset from `data/application_train.csv` relative to the project root.
 
 ## Outputs
 - `outputs/reconstruction_error_hist.png`

@@ -20,8 +20,15 @@ def _bootstrap_import_path() -> None:
 
 
 def main() -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    default_data_path = project_root / "data" / "application_train.csv"
+
     parser = argparse.ArgumentParser(description="Run anomaly detection pipeline")
-    parser.add_argument("--data", required=True, help="Path to application_train.csv")
+    parser.add_argument(
+        "--data",
+        default=str(default_data_path),
+        help=f"Path to application_train.csv (default: {default_data_path})",
+    )
     parser.add_argument(
         "--output",
         default="outputs",

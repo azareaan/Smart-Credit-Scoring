@@ -9,8 +9,14 @@ from credit_anomaly.pipeline import run_pipeline
 
 
 def main() -> None:
+    default_data_path = Path("data") / "application_train.csv"
+
     parser = argparse.ArgumentParser(description="Run anomaly detection pipeline")
-    parser.add_argument("--data", required=True, help="Path to application_train.csv")
+    parser.add_argument(
+        "--data",
+        default=str(default_data_path),
+        help=f"Path to application_train.csv (default: {default_data_path})",
+    )
     parser.add_argument(
         "--output",
         default="outputs",
