@@ -30,9 +30,19 @@ outputs/
 pip install -r requirements.txt
 ```
 
+For a stable CLI across environments (recommended), install the project in editable mode:
+```bash
+pip install -e .
+```
+
 ## Run
 ```bash
 python scripts/run_pipeline.py --data /path/to/application_train.csv --output outputs --percentile 95
+```
+
+Or after editable install:
+```bash
+credit-anomaly-pipeline --data /path/to/application_train.csv --output outputs --percentile 95
 ```
 
 ## Outputs
@@ -45,3 +55,7 @@ The CLI prints detection and downstream metrics along with plot paths.
 ## Notes
 - `TARGET` is **not** used for anomaly detection training, only for evaluation.
 - Known anomalies are validated with the `DAYS_EMPLOYED == 365243` rule.
+
+## Troubleshooting
+- If you still see `ModuleNotFoundError: No module named credit_anomaly`, make sure you are running the latest committed version of `scripts/run_pipeline.py` (it bootstraps `src` automatically).
+- If working in a fresh environment, run `pip install -e .` once and use `credit-anomaly-pipeline ...` to avoid path issues.

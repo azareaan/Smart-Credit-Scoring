@@ -1,22 +1,11 @@
-"""CLI entrypoint for the anomaly detection pipeline."""
+"""Package CLI entrypoint for anomaly detection pipeline."""
 
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
 
-
-def _bootstrap_import_path() -> None:
-    """Ensure local `src` package directory is importable in script mode."""
-    project_root = Path(__file__).resolve().parents[1]
-    src_dir = project_root / "src"
-    if not src_dir.exists():
-        raise FileNotFoundError(f"Expected source directory was not found: {src_dir}")
-
-    src_path = str(src_dir)
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
+from credit_anomaly.pipeline import run_pipeline
 
 
 def main() -> None:
@@ -34,9 +23,6 @@ def main() -> None:
         help="Percentile for anomaly threshold",
     )
     args = parser.parse_args()
-
-    _bootstrap_import_path()
-    from credit_anomaly.pipeline import run_pipeline
 
     artifacts = run_pipeline(
         data_path=Path(args.data),
