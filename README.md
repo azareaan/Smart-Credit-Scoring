@@ -23,6 +23,7 @@ Traditional credit scoring often fails to capture "logical inconsistencies" in b
 ├── main.py             # Step 1: Run Anomaly Detection
 ├── main_fuzzy.py       # Step 2: Run Fuzzy Scoring
 └── RUN_PROJECT.bat     # One-click execution script
+```
 
 🛠️ Installation
 

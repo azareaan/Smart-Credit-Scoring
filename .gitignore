@@ -7,15 +7,14 @@ env/
 .env
 
 # Data files (Do NOT upload large CSVs to GitHub)
-data/application_train.csv
-data/*.zip
-data/*.csv
+data/*
+!data/.gitkeep
 
 # Project outputs
-outputs/*.csv
-outputs/*.png
-outputs/logs/
+outputs/*
 !outputs/.gitkeep
+outputs/figures/*
+!outputs/figures/.gitkeep
 
 # IDE settings
 .vscode/
