@@ -76,11 +76,11 @@ def run_pipeline(
     pd.DataFrame(corrected_scaled, columns=processed.feature_names).to_csv(
         output_dir / "corrected_features.csv", index=False
     )
-    pd.DataFrame({"anomaly_score": ensemble_scores}).to_csv(
-        output_dir / "anomaly_scores.csv", index=False
+    pd.DataFrame({\"anomaly_score\": ensemble_scores}).to_csv(
+        output_dir / \"anomaly_scores.csv\", index=False
     )
-    pd.DataFrame({"confidence": confidence}).to_csv(
-        output_dir / "confidence_scores.csv", index=False
+    pd.DataFrame({\"confidence\": confidence}).to_csv(
+        output_dir / \"confidence_scores.csv\", index=False
     )
 
     evaluator = Evaluator()
