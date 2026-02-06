@@ -21,8 +21,8 @@ Traditional credit scoring often fails to capture "logical inconsistencies" in b
 │   └── fuzzy_logic.py  # Fuzzy Inference System (Mamdani FIS)
 ├── outputs/            # Generated results and visualizations
 ├── main.py             # Step 1: Run Anomaly Detection
-├── main_fuzzy.py       # Step 2: Run Fuzzy Scoring
-└── RUN_PROJECT.bat     # One-click execution script
+└── main_fuzzy.py       # Step 2: Run Fuzzy Scoring
+```
 
 🛠️ Installation
 
