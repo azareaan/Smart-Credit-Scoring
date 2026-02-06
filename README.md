@@ -1,230 +1,65 @@
-# Neural Network-Based Anomaly Detection & Correction in Financial Data
+# Fuzzy Credit Scoring for Risk Assessment in FinTech Systems
+### A Hybrid Deep Learning & Fuzzy Logic Approach
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![TensorFlow 2.10+](https://img.shields.io/badge/TensorFlow-2.10+-orange.svg)](https://www.tensorflow.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+This repository presents a professional-grade credit risk assessment system. It combines **Unsupervised Deep Learning (Autoencoders)** to detect behavioral anomalies and a **Fuzzy Inference System (FIS)** to calculate a final, explainable risk score.
 
-## 🎯 Project Overview
 
-This project implements a **semi-supervised risk detection and data cleaning system** for financial credit data using deep learning. The system learns normal financial patterns from repayers and identifies risky profiles (potential defaulters) while cleaning data for downstream credit scoring.
 
-### Key Features
+## 🚀 Overview
+Traditional credit scoring often fails to capture "logical inconsistencies" in borrower behavior. This project solves that by:
+1. **Anomaly Detection Core:** Using a PyTorch-based Autoencoder to learn the patterns of "Good Borrowers" (Target=0).
+2. **Logic Inconsistency Features:** Engineering specific features (e.g., External Source Variance) that highlight conflicts in credit reports.
+3. **Fuzzy Risk Layer:** An expert system that takes AI-generated anomaly scores and traditional credit metrics to provide a human-readable Risk Index (0-100).
 
-- **Semi-Supervised Learning**: Train on repayers, detect defaulters as risky deviations
-- **Risk Profile Detection**: Identify financially risky patterns that may lead to default
-- **Data Cleaning & Correction**: Fix inconsistencies for improved downstream models
-- **Neural Network Architecture**: Autoencoder for pattern learning + Isolation Forest for validation
-- **Proven Impact**: Measurable improvement in credit scoring models
+## 📂 Project Structure
+```text
+├── data/               # Raw dataset (Home Credit Default Risk)
+├── src/                # Source modules
+│   ├── features.py     # Feature engineering & Inconsistency logic
+│   ├── model.py        # PyTorch Autoencoder architecture
+│   ├── train.py        # Semi-supervised training loop
+│   └── fuzzy_logic.py  # Fuzzy Inference System (Mamdani FIS)
+├── outputs/            # Generated results and visualizations
+├── main.py             # Step 1: Run Anomaly Detection
+├── main_fuzzy.py       # Step 2: Run Fuzzy Scoring
+└── RUN_PROJECT.bat     # One-click execution script
 
-## 📊 Dataset
+🛠️ Installation
 
-**Home Credit Default Risk** (Kaggle Competition)
-- 307,511 loan applications
-- 122 original features
-- 20 key financial features selected
-- Known anomalies for validation (DAYS_EMPLOYED bug)
+    Clone this repository.
 
-## 🏗️ Architecture
+    Ensure you have Python 3.9+ installed.
 
-```
-Input: Home Credit Data (307K samples, 19 features)
-    ↓
-[Missing Flag Creation + Mean Imputation]
-    ↓
-[StandardScaler]
-    ↓
-┌──────────────────────────────────────┐
-│  Training Phase (Semi-Supervised)    │
-│  ├─ Train on: Repayers only (y=0)  │
-│  └─ Learn: Normal financial patterns│
-└──────────────────────────────────────┘
-    ↓
-┌──────────────────────────────────────┐
-│  Autoencoder (Primary - 70%)         │
-│  ├─ Encoder: [19→64→32→16→8]       │
-│  └─ Decoder: [8→16→32→64→19]       │
-└──────────────────────────────────────┘
-    ↓
-[Reconstruction Error] → Risk Score
-    ↓
-┌──────────────────────────────────────┐
-│  Isolation Forest (Secondary - 30%)  │
-│  └─ 100 trees, contamination=0.1    │
-└──────────────────────────────────────┘
-    ↓
-[Ensemble: 0.7*AE + 0.3*IF]
-    ↓
-[Risk Detection + Data Cleaning]
-    ↓
-Output: Clean Data + Risk Scores → Fuzzy Credit Scoring
-```
+    Place application_train.csv in the data/ folder.
 
-## 📁 Project Structure
+    Install dependencies:
+    Bash
 
-```
-financial-anomaly-detection/
-├── src/
-│   ├── preprocessing.py      # Data preprocessing pipeline
-│   ├── models.py             # Autoencoder & ensemble models
-│   ├── correction.py         # Smart anomaly correction
-│   ├── evaluation.py         # Intrinsic & downstream metrics
-│   └── visualization.py      # Plot utilities
-├── notebooks/
-│   ├── 01_EDA.ipynb          # Exploratory data analysis
-│   ├── 02_Training.ipynb     # Model training
-│   ├── 03_Evaluation.ipynb   # Full evaluation
-│   └── 04_Demo.ipynb         # Quick demonstration
-├── data/                     # Dataset (gitignored)
-├── models/                   # Trained models (gitignored)
-├── results/
-│   ├── figures/             # Visualizations
-│   └── metrics/             # Evaluation results
-├── requirements.txt
-└── README.md
-```
+    pip install -r requirements.txt
 
-## 🚀 Quick Start
+📈 Methodology
+1. The Autoencoder (AE)
 
-### Installation
+The model is trained only on "Repayers" (Target=0). By using a restricted bottleneck (4 dimensions), it acts as a regularizer. When the model encounters a "Default" profile or a "Logical Inconsistency," the Reconstruction Error (MSE) spikes, flagging it as an anomaly.
+2. Fuzzy Inference System (FIS)
 
-```bash
-# Clone repository
-git clone https://github.com/yourusername/financial-anomaly-detection.git
-cd financial-anomaly-detection
+We use the Mamdani method to map:
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+    Input 1: AI Anomaly Score (High/Medium/Low)
 
-# Install dependencies
-pip install -r requirements.txt
-```
+    Input 2: External Source Mean (High/Medium/Low)
 
-### Download Dataset
+    Output: Final Risk Score (0-100)
 
-Download from [Kaggle](https://www.kaggle.com/c/home-credit-default-risk):
-```bash
-# Using Kaggle API
-kaggle competitions download -c home-credit-default-risk
-unzip application_train.csv.zip -d data/
-```
+📊 Results
 
-### Run Full Pipeline
+    Unsupervised AUC: ~0.65 (Significant improvement over standard baseline).
 
-```python
-from src.preprocessing import FinancialPreprocessor
-from src.models import AnomalyDetectionSystem
-from src.evaluation import Evaluator
+    Explainability: Unlike black-box models, the Fuzzy system provides clear reasons for every risk score generated.
 
-# 1. Preprocess
-preprocessor = FinancialPreprocessor()
-X, y, features = preprocessor.fit_transform('data/application_train.csv')
+🤝 Acknowledgments
 
-# 2. Train
-detector = AnomalyDetectionSystem()
-detector.fit(X[y == 0])  # Train on normal samples only
+Built for academic research in FinTech Risk Systems. This project utilizes the Home Credit Default Risk dataset.
 
-# 3. Detect & Correct
-results = detector.detect_and_correct(X)
-
-# 4. Evaluate
-evaluator = Evaluator()
-metrics = evaluator.evaluate_all(X, results['corrected'], y)
-```
-
-## 📈 Results
-
-### Risk Detection Performance
-
-| Metric | Target | Note |
-|--------|--------|------|
-| ROC-AUC | 0.70-0.76 | Detecting defaulters as risky |
-| Precision | 0.25-0.35 | High default rate (~8%) |
-| Recall | 0.30-0.50 | Balance detection/false alarms |
-| F1-Score | 0.25-0.40 | Imbalanced dataset |
-
-### Downstream Impact (Credit Scoring)
-
-| Model | Expected Improvement | Note |
-|-------|---------------------|------|
-| Logistic Regression | +0.5% to +2.0% | Data quality improvement |
-| LightGBM | +0.3% to +1.5% | Robust to noise |
-
-> **Note**: Results depend on data quality and hyperparameter tuning. The primary goal is clean data preparation for fuzzy credit scoring.
-
-## 🔬 Key Scientific Contributions
-
-1. **Contextual Anomaly Definition**: Anomalies defined as inconsistencies between features, not just extreme values
-2. **Missing Value Strategy**: Binary flagging + mean imputation preserves information for neural networks
-3. **Proven Downstream Impact**: Measurable improvement in credit risk models
-
-## 📊 Visualizations
-
-### Anomaly Distribution
-![Anomaly Distribution](results/figures/anomaly_distribution.png)
-
-### Downstream Impact
-![Impact](results/figures/downstream_impact.png)
-
-### Feature Space (t-SNE)
-![t-SNE](results/figures/tsne_visualization.png)
-
-## 🛠️ Technical Details
-
-### Preprocessing Strategy
-
-```python
-# Critical: Missing values are informative signals!
-1. Create binary flags: is_missing_feature
-2. Impute with mean (preserves distribution for StandardScaler)
-3. Apply StandardScaler (Z-score normalization)
-```
-
-### Why Autoencoder?
-
-- **Learns contextual patterns**: "For this income, what credit is normal?"
-- **Non-linear manifold**: Captures complex feature relationships
-- **Reconstruction = Correction**: Projects anomalies onto normal manifold
-
-### Ensemble Rationale
-
-- **Autoencoder (70%)**: Contextual pattern learning
-- **Isolation Forest (30%)**: Distributional outlier detection
-- **Complementary**: Different perspectives on anomalies
-
-## 📝 Citation
-
-If you use this code in your research, please cite:
-
-```bibtex
-@software{financial_anomaly_detection_2024,
-  author = {Your Name},
-  title = {Neural Network-Based Anomaly Detection and Correction in Financial Data},
-  year = {2024},
-  url = {https://github.com/yourusername/financial-anomaly-detection}
-}
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Contact
-
-- **Author**: Your Name
-- **Email**: your.email@example.com
-- **LinkedIn**: [Your Profile](https://linkedin.com/in/yourprofile)
-
-## 🙏 Acknowledgments
-
-- Home Credit Group for the dataset
-- Kaggle community for valuable insights
-- Research papers on anomaly detection in financial data
 
 ---
-
-**⭐ Star this repository if you find it helpful!**

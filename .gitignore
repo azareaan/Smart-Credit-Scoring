@@ -1,58 +1,27 @@
-# Python
+# Python environment and cache
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual Environment
 venv/
-ENV/
 env/
+.env
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb_checkpoints
-
-# Dataset (large files)
-data/*.csv
+# Data files (Do NOT upload large CSVs to GitHub)
+data/application_train.csv
 data/*.zip
-data/raw/
-data/processed/
+data/*.csv
 
-# Models (large files)
-models/*.h5
-models/*.pkl
-models/*.joblib
+# Project outputs
+outputs/*.csv
+outputs/*.png
+outputs/logs/
+!outputs/.gitkeep
 
-# IDE
+# IDE settings
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS
 .DS_Store
-Thumbs.db
 
-# Results (optional - keep structure but not large files)
-results/figures/*.png
-results/metrics/*.json
-
-# Kaggle
-kaggle.json
+# PyTorch/Model checkpoints
+*.pth
+*.pt
