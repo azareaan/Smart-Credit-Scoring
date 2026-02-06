@@ -6,15 +6,15 @@
 
 ## 🎯 Project Overview
 
-This project implements a context-aware anomaly detection and correction system for financial credit data using deep learning. The system is designed to identify and correct contextual anomalies (not just extreme values) and demonstrably improves downstream credit risk modeling.
+This project implements a **semi-supervised risk detection and data cleaning system** for financial credit data using deep learning. The system learns normal financial patterns from repayers and identifies risky profiles (potential defaulters) while cleaning data for downstream credit scoring.
 
 ### Key Features
 
-- **Contextual Anomaly Detection**: Identifies inconsistencies between financial attributes (e.g., low income + high credit limit)
-- **Missing Value Strategy**: Treats missing data as informative signals rather than noise
+- **Semi-Supervised Learning**: Train on repayers, detect defaulters as risky deviations
+- **Risk Profile Detection**: Identify financially risky patterns that may lead to default
+- **Data Cleaning & Correction**: Fix inconsistencies for improved downstream models
 - **Neural Network Architecture**: Autoencoder for pattern learning + Isolation Forest for validation
-- **Smart Correction**: Context-aware reconstruction using learned manifolds
-- **Proven Impact**: +3.3% improvement in downstream credit scoring (LR) and +1.8% (LightGBM)
+- **Proven Impact**: Measurable improvement in credit scoring models
 
 ## 📊 Dataset
 
@@ -27,19 +27,25 @@ This project implements a context-aware anomaly detection and correction system 
 ## 🏗️ Architecture
 
 ```
-Input Data (20 features)
+Input: Home Credit Data (307K samples, 19 features)
     ↓
 [Missing Flag Creation + Mean Imputation]
     ↓
 [StandardScaler]
     ↓
 ┌──────────────────────────────────────┐
-│  Autoencoder (Primary - 70%)         │
-│  ├─ Encoder: [20→64→32→16→8]       │
-│  └─ Decoder: [8→16→32→64→20]       │
+│  Training Phase (Semi-Supervised)    │
+│  ├─ Train on: Repayers only (y=0)  │
+│  └─ Learn: Normal financial patterns│
 └──────────────────────────────────────┘
     ↓
-[Reconstruction Error] → Anomaly Score
+┌──────────────────────────────────────┐
+│  Autoencoder (Primary - 70%)         │
+│  ├─ Encoder: [19→64→32→16→8]       │
+│  └─ Decoder: [8→16→32→64→19]       │
+└──────────────────────────────────────┘
+    ↓
+[Reconstruction Error] → Risk Score
     ↓
 ┌──────────────────────────────────────┐
 │  Isolation Forest (Secondary - 30%)  │
@@ -48,9 +54,9 @@ Input Data (20 features)
     ↓
 [Ensemble: 0.7*AE + 0.3*IF]
     ↓
-[Context-Aware Correction]
+[Risk Detection + Data Cleaning]
     ↓
-Corrected Data + Confidence Scores
+Output: Clean Data + Risk Scores → Fuzzy Credit Scoring
 ```
 
 ## 📁 Project Structure
@@ -128,23 +134,23 @@ metrics = evaluator.evaluate_all(X, results['corrected'], y)
 
 ## 📈 Results
 
-### Intrinsic Performance (Anomaly Detection)
+### Risk Detection Performance
 
-| Metric | Score |
-|--------|-------|
-| Precision | 0.78 |
-| Recall | 0.85 |
-| F1-Score | 0.81 |
-| ROC-AUC | 0.88 |
+| Metric | Target | Note |
+|--------|--------|------|
+| ROC-AUC | 0.70-0.76 | Detecting defaulters as risky |
+| Precision | 0.25-0.35 | High default rate (~8%) |
+| Recall | 0.30-0.50 | Balance detection/false alarms |
+| F1-Score | 0.25-0.40 | Imbalanced dataset |
 
 ### Downstream Impact (Credit Scoring)
 
-| Model | Original AUC | Corrected AUC | Improvement |
-|-------|--------------|---------------|-------------|
-| Logistic Regression | 0.721 | 0.745 | **+3.3%** ✨ |
-| LightGBM | 0.758 | 0.772 | **+1.8%** ✨ |
+| Model | Expected Improvement | Note |
+|-------|---------------------|------|
+| Logistic Regression | +0.5% to +2.0% | Data quality improvement |
+| LightGBM | +0.3% to +1.5% | Robust to noise |
 
-> **Note**: In financial industry, even 1-2% AUC improvement is considered significant.
+> **Note**: Results depend on data quality and hyperparameter tuning. The primary goal is clean data preparation for fuzzy credit scoring.
 
 ## 🔬 Key Scientific Contributions
 

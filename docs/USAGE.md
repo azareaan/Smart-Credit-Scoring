@@ -256,11 +256,8 @@ create_evaluation_summary(
 ### Custom Autoencoder Architecture
 
 ```python
-import tensorflow as tf
-
-keras = tf.keras
-layers = tf.keras.layers
-
+from tensorflow import keras
+from tensorflow.keras import layers
 
 def build_custom_autoencoder(input_dim):
     # Custom encoder

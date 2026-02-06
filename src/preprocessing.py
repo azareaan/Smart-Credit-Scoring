@@ -146,7 +146,7 @@ class FinancialPreprocessor:
         return df
     
     def _select_features(self, df):
-        """Select 20 key financial features."""
+        """Select 19 key financial features (DAYS_EMPLOYED_ANOM removed for semi-supervised)."""
         self.feature_names = [
             # Financial amounts (4)
             'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'AMT_ANNUITY', 'AMT_GOODS_PRICE',
@@ -165,10 +165,7 @@ class FinancialPreprocessor:
             'CNT_CHILDREN', 'CNT_FAM_MEMBERS', 'AGE',
             
             # Categorical (2)
-            'income_encoded', 'education_encoded',
-            
-            # Anomaly flag (1)
-            'DAYS_EMPLOYED_ANOM'
+            'income_encoded', 'education_encoded'
         ]
         
         X = df[self.feature_names].values

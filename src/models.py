@@ -6,12 +6,12 @@ Anomaly Detection Models
 """
 
 import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import MinMaxScaler
 import joblib
-import tensorflow as tf
-keras = tf.keras
-layers = tf.keras.layers
 
 
 class AutoencoderModel:
@@ -206,7 +206,10 @@ class AnomalyDetectionSystem:
         print("✓ Training complete")
         
     def _calibrate_ensemble(self, X):
-        """Normalize and combine scores."""
+        """
+        Normalize and combine scores.
+        For semi-supervised: threshold based on expected default rate (~8-10%)
+        """
         ae_scores = self.autoencoder.predict_scores(X)
         if_scores = self.isolation_forest.predict_scores(X)
         
@@ -216,8 +219,12 @@ class AnomalyDetectionSystem:
         # Calculate ensemble scores
         ensemble_scores = self._get_ensemble_scores(ae_scores, if_scores)
         
-        # Set threshold at 95th percentile
-        self.ensemble_threshold = np.percentile(ensemble_scores, 95)
+        # Set threshold at 90-92th percentile (target ~8-10% as risky)
+        self.ensemble_threshold = np.percentile(ensemble_scores, 90)
+        
+        print(f"Ensemble threshold: {self.ensemble_threshold:.4f} (90th percentile)")
+        expected_anomalies = (ensemble_scores > self.ensemble_threshold).sum()
+        print(f"Expected detections: {expected_anomalies:,} ({expected_anomalies/len(X)*100:.1f}%)")
     
     def _get_ensemble_scores(self, ae_scores, if_scores):
         """Weighted combination of normalized scores."""
